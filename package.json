@@ -1,6 +1,6 @@
 {
     "name": "marked-webpack-plugin",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "A webpack5 plugin for markdown to html",
     "main": "dist/index.js",
     "author": "kaze-k <kerkaze@outlook.com> (https://github.com/kaze-k)",
