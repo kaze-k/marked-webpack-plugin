@@ -49,7 +49,9 @@ class MarkedWebpackPlugin {
           reject(error)
         }
 
-        resolve(data.toString())
+        if (typeof data !== "undefined") {
+          resolve(data.toString())
+        }
       })
     })
   }
