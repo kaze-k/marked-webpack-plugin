@@ -12,7 +12,7 @@ const config = {
     new MarkedWebpackPlugin({
       input: path.resolve(__dirname, "./CHANGELOG.md"),
       // input: path.resolve(__dirname, "./CHANGELOGS.md"),
-      output: path.resolve(__dirname, "./dist/", "CHANGELOG.html"),
+      output: "CHANGELOG.html",
     })
   ],
 }

@@ -6,11 +6,11 @@ import { Compiler } from "webpack"
 import { marked } from "marked"
 
 const TITLE = "change log"
-const TEMPLATE = path.resolve(__dirname, "./template.html")
+const TEMPLATE: string = path.resolve(__dirname, "./template.html")
 
 interface Options {
   input: PathOrFileDescriptor
-  output: PathOrFileDescriptor
+  output: string
   title?: string
   template?: PathOrFileDescriptor
 }
@@ -23,7 +23,7 @@ interface Opts {
 class MarkedWebpackPlugin {
   private static options: Opts
   private input: PathOrFileDescriptor
-  private output: PathOrFileDescriptor
+  private output: string
   private template: PathOrFileDescriptor
 
   constructor(options: Options) {
@@ -43,8 +43,8 @@ class MarkedWebpackPlugin {
   }
 
   private readFile(filePath: PathOrFileDescriptor): Promise<string> {
-    return new Promise((resolve: (value: string) => void, reject: (reason?: Error) => void) => {
-      fs.readFile(filePath, { encoding: "utf8", flag: "r" }, (error: Error | null, data: string) => {
+    return new Promise((resolve: (value: string) => void, reject: (reason?: Error) => void): void => {
+      fs.readFile(filePath, { encoding: "utf8", flag: "r" }, (error: Error | null, data: string): void => {
         if (error) {
           reject(error)
         }
@@ -56,16 +56,18 @@ class MarkedWebpackPlugin {
     })
   }
 
-  private async writeFile(): Promise<void> {
-    const content = await this.readFile(this.input)
-    const template = await this.readFile(this.template)
+  private async writeFile(compiler: Compiler): Promise<void> {
+    const content: string = await this.readFile(this.input)
+    const template: string = await this.readFile(this.template)
 
     MarkedWebpackPlugin.options.content = marked.parse(content)
 
-    const html = ejs.render(template, { markedWebpackPlugin: MarkedWebpackPlugin })
+    const html: string = ejs.render(template, { markedWebpackPlugin: MarkedWebpackPlugin })
+
+    const output: string = path.join(compiler.outputPath, this.output)
 
     return new Promise((resolve: (value: void | PromiseLike<void>) => void, reject: (reason?: Error) => void) => {
-      fs.writeFile(this.output, format(html), { encoding: "utf8", flag: "w" }, (error: Error | null) => {
+      fs.writeFile(output, format(html), { encoding: "utf8", flag: "w" }, (error: Error | null) => {
         if (error) {
           reject(error)
         }
@@ -78,7 +80,7 @@ class MarkedWebpackPlugin {
   public apply(compiler: Compiler): void {
     compiler.hooks.emit.tap("marked-webpack-plugin", (): void => {
       try {
-        this.writeFile()
+        this.writeFile(compiler)
       } catch (err) {
         console.log(err)
         throw err

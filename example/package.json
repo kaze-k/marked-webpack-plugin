@@ -1,0 +1,16 @@
+{
+  "name": "example",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "test": "webpack --config ./webpack.config.babel.js --mode production"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.24.4",
+    "@babel/preset-env": "^7.24.4",
+    "@babel/register": "^7.23.7",
+    "webpack": "^5.91.0",
+    "webpack-cli": "^5.1.4"
+  }
+}
